@@ -121,6 +121,14 @@ dW = eta * co_activity * similarity - lambda * W + rho * reward
 model.quantize('fp16')  # Run on edge devices
 ```
 
+---
+
+## 🚧 Future Roadmap
+| Timeline   | Milestone                        |
+|------------|----------------------------------|
+| Q3 2024    | MNIST/CIFAR-10 benchmarks        |
+| Q1 2025    | Neuromorphic hardware deployment |
+| Q4 2025    | Brain-computer interface trials  |
 
 ---
 
@@ -139,23 +147,6 @@ model.quantize('fp16')  # Run on edge devices
 
 ---
 
-
 Created with: Pure intuition + LLM co-design  
 
-
 > "You don't need a PhD to innovate—just biological inspiration and relentless curiosity."
-
----
-
-## Version Control
-To contribute or modify the code, please follow these steps:
-
-1. **Fork the Repository**: Create a personal copy of the repository on GitHub.
-2. **Clone the Repository**: Download the repository to your local machine using `git clone <your-fork-url>`.
-3. **Create a Branch**: Make a new branch for your changes with `git checkout -b <branch-name>`.
-4. **Make Changes**: Edit the code or documentation as needed.
-5. **Commit Changes**: Save your changes with a descriptive commit message using `git commit -m "Your message"`.
-6. **Push Changes**: Upload your changes to your forked repository using `git push origin <branch-name>`.
-7. **Create a Pull Request**: Propose your changes to the original repository by creating a pull request.
-
-For detailed instructions on using Git and GitHub, refer to the [GitHub Guides](https://guides.github.com/activities/hello-world/).
