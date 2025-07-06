@@ -80,21 +80,6 @@ model = BioPlasticTransformer(
 output = model(sequence, reward=reward_signal)
 ```
 
----
-
-## 🔍 Key Results
-Tested on continual learning benchmarks:
-
-| Metric                  | Standard Transformer | NeuroPlastic |
-|-------------------------|---------------------|--------------|
-| Catastrophic Forgetting | 72% accuracy drop   | 12% drop     |
-| Energy Use (Watts)      | 8.2W                | 4.7W         |
-| Adaptation Speed        | 100 epochs          | 3 epochs     |
-
-![Results Chart](https://i.imgur.com/ZKbpg0l.png)
-*Note: 38% less forgetting than state-of-the-art models*
-
----
 
 ## 🌟 What Makes This Special
 
@@ -121,14 +106,6 @@ dW = eta * co_activity * similarity - lambda * W + rho * reward
 model.quantize('fp16')  # Run on edge devices
 ```
 
----
-
-## 🚧 Future Roadmap
-| Timeline   | Milestone                        |
-|------------|----------------------------------|
-| Q3 2024    | MNIST/CIFAR-10 benchmarks        |
-| Q1 2025    | Neuromorphic hardware deployment |
-| Q4 2025    | Brain-computer interface trials  |
 
 ---
 
@@ -147,6 +124,10 @@ model.quantize('fp16')  # Run on edge devices
 
 ---
 
+
 Created with: Pure intuition + LLM co-design  
 
+
 > "You don't need a PhD to innovate—just biological inspiration and relentless curiosity."
+
+---
