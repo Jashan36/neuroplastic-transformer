@@ -3,3 +3,5 @@ transformers
 numpy
 nltk
 datasets
+tqdm
+rouge-score
