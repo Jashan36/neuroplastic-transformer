@@ -1,58 +1,126 @@
-# Neuro-Plastic Fine-Tuning for Controlled Text Generation
+# Neuroplastic Language Model: Advanced Transformer with Neuroplasticity
 
-This repository contains a Python script for fine-tuning a GPT-2 model using a novel, neuro-inspired approach. The goal is to produce a model that generates text controlled for specific qualities like length, semantic relevance, and diversity, moving beyond standard cross-entropy loss.
+This repository contains a production-ready implementation of a large language model (LLM) with advanced neuroplasticity-inspired training, curriculum learning, and multi-objective reward optimization. The core model is a custom transformer architecture, trained from scratch with a unique neuroplasticity mechanism that adapts learning based on long-term performance trends.
 
-The implementation combines several advanced techniques:
-- **Neuro-Plasticity:** A custom wrapper that applies Hebbian-like weight updates based on reward signals, allowing the model to "learn how to learn."
-- **Multi-Objective Reward Function:** A sophisticated loss function that guides the model towards generating efficient, semantically coherent, diverse, and contextually appropriate text.
-- **Curriculum Learning:** A structured training regimen that starts with simple tasks and gradually moves to more complex ones, stabilizing the learning process.
-- **Mixed-Precision Training:** Utilizes CUDA's capabilities for faster and more memory-efficient training.
+## Key Features
+- **Custom Transformer Architecture:** Highly configurable (e.g., 24 layers, 2048-dim embeddings, 16 heads) with efficient attention and feedforward blocks.
+- **Neuroplasticity Mechanism:** Inspired by biological learning, the model maintains plasticity traces, momentum buffers, and low-rank modulatory updates to reinforce beneficial learning pathways based on reward signals.
+- **Multi-Objective Reward Function:** Training is guided by a comprehensive reward signal combining ROUGE, coherence, diversity, and perplexity metrics.
+- **Curriculum Learning:** Training progresses through increasingly complex tasks (definitions, explanations, dialogues) to stabilize and accelerate learning.
+- **Benchmark Evaluation:** Includes built-in evaluation on MMLU-style and HellaSwag-style tasks for quick benchmarking.
+- **Synthetic Data Generation:** Uses robust synthetic data for rapid prototyping and validation.
+- **Checkpointing:** Automatic saving and loading of model, optimizer, scheduler, and plasticity state.
 
-## How It Works
-
-The core of this project is the `NeuroPlasticWrapper`, which augments the standard backpropagation process.
-
-1.  **Standard Forward/Backward Pass:** The model first calculates a standard language modeling loss (Cross-Entropy) and a custom `reward_loss`. This `reward_loss` is a weighted sum of penalties for undesirable outputs (e.g., too long, semantically irrelevant, not diverse).
-2.  **Gradient-Based Reward Signal:** The gradients from this combined loss are used for two purposes. First, they update the model weights via a standard optimizer (`AdamW`).
-3.  **Eligibility Traces:** The `NeuroPlasticWrapper` maintains "eligibility traces" for each weight in the network. During the backward pass, it observes which weights have high gradients, marking them as "eligible" for plastic changes. These traces accumulate over time, much like synaptic potentiation in the brain.
-4.  **Plastic Update:** After the optimizer step, a second, separate update is applied. The model's most "eligible" weights are modified based on the reward signal (derived from the negative gradient). This update is very small (`plasticity_lr`) and acts as a meta-learning mechanism, reinforcing pathways that lead to high-reward outcomes.
-
-This dual-update system allows the model to both learn the language task directly (via `AdamW`) and learn to configure its own weights to become better at the task over time (via the plastic updates).
-
-## Key Components
-
-### 1. Neuro-Plasticity Wrapper (`NeuroPlasticWrapper`)
-- Wraps the `gpt2-medium` model.
-- Maintains `eligibility_traces` for model parameters, inspired by biological synapses.
-- Updates these traces based on the magnitude of parameter gradients.
-- Applies small, reward-driven weight updates (`plastic_update`) to reinforce beneficial learning pathways.
-
-### 2. Multi-Objective Reward Function
-The total loss is a combination of the standard cross-entropy loss and a weighted reward loss:
-`total_loss = loss_ce + lambda_reward * reward_loss`
-
-The `reward_loss` is composed of four distinct components:
-- **Efficiency Loss (`alpha`):** Penalizes the model for generating text that deviates from a `target_length`.
-- **Semantic Loss (`beta_sem`):** Encourages the generated response to be semantically similar to the prompt, using cosine similarity between prompt and response embeddings.
-- **Diversity Loss (`gamma_div`):** Promotes creativity and reduces repetition by rewarding higher entropy in the model's output probability distribution.
-- **Reference-based Loss (`delta_ref`):** Uses **BLEU** and **METEOR** scores to penalize the model for deviating from a ground-truth response, ensuring factual and stylistic alignment.
-
-### 3. Curriculum Learning (`CURRICULUM`)
-Training proceeds through a predefined curriculum to ensure stability and effective learning. The model starts with simpler, shorter tasks and progresses to more complex, longer-form generation.
-1.  **Definitions:** Short, factual statements (max length 30).
-2.  **Explanations:** More detailed, explanatory text (max length 80).
-3.  **Dialogues:** Complex, conversational generation (max length 150).
-
----
-### 2. Create a Virtual Environment (Recommended)
+## Requirements
+Install dependencies with:
 ```bash
-python -m venv venv
+pip install -r requirements.txt
+```
 
+**Required packages:**
+- torch
+- transformers
+- numpy
+- nltk
+- datasets
+- tqdm
+- rouge-score
 
-
-## Setup and Installation
+## Setup and Usage
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
+```
+
+### 2. Prepare Environment
+(Optional but recommended)
+```bash
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+```
+
+### 3. Run the Model
+To run the full neuroplastic LLM pipeline (validation, training, benchmarking):
+```bash
+python neuro-transformer/model1.py
+```
+
+- The script will first validate the neuroplasticity mechanism against a baseline.
+- If validation passes, it will proceed to full training with curriculum learning.
+- After training, it runs quick benchmark evaluations and saves checkpoints in `neuroplastic_checkpoints/`.
+
+### 4. Checkpoints and Logs
+- Model checkpoints, optimizer state, and plasticity traces are saved in `neuroplastic_checkpoints/`.
+- Training logs are saved in `training_logs/`.
+
+## Model Overview (from model1.py)
+- **Architecture:** Custom transformer (configurable layers, heads, embedding size)
+- **Plasticity:** Hebbian-like updates, momentum, low-rank modulation
+- **Reward:** Weighted sum of ROUGE, coherence, diversity, perplexity
+- **Curriculum:** Definitions → Explanations → Dialogues
+- **Evaluation:** MMLU and HellaSwag samples
+
+## Extending or Customizing
+- Adjust model/training config in `IntegratedTrainingConfig` (in `model1.py`).
+- Add new reward metrics in `AdvancedRewardComputer`.
+- Plug in your own data by modifying the `SyntheticDataset` or loading from files.
+
+## Main Formulas Used in Training
+
+### 1. Language Modeling Loss (Cross-Entropy)
+The core loss for next-token prediction:
+
+$$
+\text{LM Loss} = \text{CrossEntropy}(\text{shifted logits}, \text{shifted labels})
+$$
+
+### 2. Comprehensive Reward Function
+The reward used for neuroplasticity and curriculum advancement is a weighted sum of several metrics:
+
+$$
+\text{Total Reward} = w_\text{rouge} \cdot \text{ROUGE} + w_\text{coherence} \cdot \text{Coherence} + w_\text{diversity} \cdot \text{Diversity} + w_\text{perplexity} \cdot \text{Perplexity}
+$$
+
+Where:
+- $\text{ROUGE}$: Mean ROUGE score between generated and reference text
+- $\text{Coherence}$: Unique word ratio (proxy for repetition)
+- $\text{Diversity}$: Vocabulary richness (unique words / 50, capped at 1)
+- $\text{Perplexity}$: $1 - (\text{perplexity} - 1)/10$ (lower is better)
+- $w_*$: Tunable weights in config
+
+### 3. Plasticity Trace Update (Exponential Moving Average)
+For each parameter $\theta$:
+
+$$
+\text{Trace}_{t+1} = \gamma \cdot \text{Trace}_t + (1 - \gamma) \cdot \nabla_\theta L
+$$
+
+Where $\gamma$ is the trace decay factor, and $\nabla_\theta L$ is the gradient.
+
+### 4. Plasticity Modulation (Momentum + Low-Rank)
+For each parameter:
+
+$$
+\text{Momentum}_{t+1} = m \cdot \text{Momentum}_t + (1 - m) \cdot \text{Trace}_{t+1}
+$$
+
+$$
+\text{Modulation} = r \cdot s \cdot \text{Momentum}_{t+1} + 0.1 \cdot (U V) \quad \text{(if low-rank used)}
+$$
+Where $r$ is the reward signal, $s$ is the modulation strength, $U, V$ are low-rank matrices.
+
+### 5. Plasticity Parameter Update
+For each parameter $\theta$:
+
+$$
+\theta \leftarrow \theta + \eta_\text{plasticity} \cdot \text{Modulation}
+$$
+
+Where $\eta_\text{plasticity}$ is the plasticity learning rate.
+
+---
+
+For more details, see the code in `neuro-transformer/model1.py` and the inline documentation.
